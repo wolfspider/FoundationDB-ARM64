@@ -22,7 +22,7 @@
 
 fdbrpc_BUILD_SOURCES += fdbrpc/libeio/eio.c
 
-fdbrpc_CFLAGS := -I$(BOOSTDIR) -I. -Ifdbrpc -Ifdbrpc/libeio -DUSE_UCONTEXT
+fdbrpc_CFLAGS := -I$(BOOSTDIR) -I. -Ifdbrpc -Ifdbrpc/libeio -DUSE_UCONTEXT -Wno-return-local-addr
 fdbrpc_LDFLAGS :=
 
 ifeq ($(PLATFORM),osx)

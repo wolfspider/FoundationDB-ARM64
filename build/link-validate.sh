@@ -18,7 +18,7 @@ fi
 for i in $(objdump -T "$1" | awk '{print $5}' | grep GLIBC | sed 's/ *$//g' | sed 's/GLIBC_//' | sort | uniq); do
 	if ! verlte "$i" "$2"; then 
 		echo "!!! WARNING: DEPENDENCY ON NEWER LIBC DETECTED !!!"
-		exit 1
+                #exit 1
 	fi
 done
 
@@ -34,6 +34,6 @@ for j in $(objdump -p "$1" | grep NEEDED | awk '{print $2}'); do
 	done
 	if ! [[ $PRESENT == 1 ]]; then 
 		echo "!!! WARNING: UNKNOWN SHARED OBJECT DEPENDENCY DETECTED: $j !!!"
-		exit 1
+                #exit 1
 	fi
 done

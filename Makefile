@@ -4,7 +4,7 @@ ARCH := $(shell uname -m)
 
 TOPDIR := $(shell pwd)
 
-ifeq ($(ARCH),x86_64)
+ifeq ($(ARCH),aarch64)
   ARCH := x64
 else
   $(error Not prepared to compile on $(ARCH))
@@ -38,8 +38,7 @@ ifeq ($(PLATFORM),Linux)
   CC ?= gcc
   CXX ?= g++
 
-  CXXFLAGS += -std=c++0x
-
+  CXXFLAGS += -std=c++0x -fpermissive -march=armv8-a+crc+crypto -DARM -D__NEON__ -mcpu=cortex-a72 -DHAVEFP16 -Wno-return-local-addr
   BOOSTDIR ?= /opt/boost_1_52_0
   DLEXT := so
   java_DLEXT := so

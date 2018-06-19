@@ -27,6 +27,7 @@
 
 #ifdef __linux__
 #include <semaphore.h>
+# define cpu_relax() asm volatile("yield" ::: "memory")
 #endif
 
 #ifdef __APPLE__
@@ -57,7 +58,7 @@ public:
 	}
 	void enter() {
 		while (interlockedCompareExchange(&isLocked, 1, 0) == 1)
-			_mm_pause();
+                       cpu_relax();
 #if VALGRIND
 		ANNOTATE_RWLOCK_ACQUIRED(this, true);
 #endif

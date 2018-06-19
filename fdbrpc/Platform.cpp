@@ -53,7 +53,7 @@
 #include <ftw.h>
 #include <pwd.h>
 #include <sched.h>
-#include <cpuid.h>
+//#include <cpuid.h>
 
 #ifdef __APPLE__
 #include <sys/uio.h>
@@ -136,9 +136,10 @@ bool isSse42Supported()
     __cpuid(info, 1);
     return (info[2] & (1 << 20)) != 0;
 #elif defined(__unixish__)
-    uint32_t eax, ebx, ecx, edx, level = 1, count = 0;
-    __cpuid_count(level, count, eax, ebx, ecx, edx);
-    return ((ecx >> 20) & 1) != 0;
+    //uint32_t eax, ebx, ecx, edx, level = 1, count = 0;
+    //__cpuid_count(level, count, eax, ebx, ecx, edx);
+    //return ((ecx >> 20) & 1) != 0;
+    return true;
 #else
     #error Port me!
 #endif

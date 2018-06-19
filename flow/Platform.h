@@ -370,7 +370,8 @@ dev_t getDeviceId(std::string path);
 #endif
 
 #ifdef __linux__
-#include <x86intrin.h>
+//#include <x86intrin.h>
+#include "SSE2NEON.h"
 #include <features.h>
 #include <sys/stat.h>
 #endif
@@ -397,7 +398,7 @@ inline static int64_t interlockedExchangeAdd64(volatile int64_t *a, int64_t b) {
 inline static int64_t interlockedExchange64(volatile int64_t *a, int64_t b) { return _InterlockedExchange64(a, b); }
 inline static int64_t interlockedOr64(volatile int64_t *a, int64_t b) { return _InterlockedOr64(a, b); }
 #elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
-#include <xmmintrin.h>
+//#include <xmmintrin.h>
 inline static int32_t interlockedIncrement(volatile int32_t *a) { return __sync_add_and_fetch(a, 1); }
 inline static int64_t interlockedIncrement64(volatile int64_t *a) { return __sync_add_and_fetch(a, 1); }
 inline static int32_t interlockedDecrement(volatile int32_t *a) { return __sync_add_and_fetch(a, -1); }

@@ -564,15 +564,18 @@ void Net2::run() {
 	runCycleFuncPtr runFunc = reinterpret_cast<runCycleFuncPtr>(reinterpret_cast<flowGlobalType>(g_network->global(INetwork::enRunCycleFunc)));
 
 	double nnow = timer_monotonic();
+        int64_t virtual_timer_value;
+        asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
 
 	while(!stopped) {
 		++countRunLoop;
 
 		if (runFunc) {
-			tsc_begin = __rdtsc();
+                        tsc_begin = virtual_timer_value;
 			taskBegin = timer_monotonic();
 			runFunc();
-			checkForSlowTask(tsc_begin, __rdtsc(), timer_monotonic() - taskBegin, TaskRunCycleFunction);
+                        asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
+                        checkForSlowTask(tsc_begin, virtual_timer_value, timer_monotonic() - taskBegin, TaskRunCycleFunction);
 		}
 
 		double sleepTime = 0;
@@ -609,7 +612,8 @@ void Net2::run() {
 
 		processThreadReady();
 
-		tsc_begin = __rdtsc();
+                asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
+                tsc_begin = virtual_timer_value;
 		tsc_end = tsc_begin + FLOW_KNOBS->TSC_YIELD_TIME;
 		taskBegin = timer_monotonic();
 		numYields = 0;
@@ -742,7 +746,10 @@ void Net2::checkForSlowTask(int64_t tscBegin, int64_t tscEnd, double duration, i
 }
 
 bool Net2::check_yield( int taskID, bool isRunLoop ) {
-	if(!isRunLoop && numYields > 0) {
+    int64_t virtual_timer_value;
+    asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
+
+        if(!isRunLoop && numYields > 0) {
 		++numYields;
 		return true;
 	}
@@ -760,7 +767,7 @@ bool Net2::check_yield( int taskID, bool isRunLoop ) {
 	}
 
 	// SOMEDAY: Yield if there are lots of higher priority tasks queued?
-	int64_t tsc_now = __rdtsc();
+        int64_t tsc_now = virtual_timer_value;
 	double newTaskBegin = timer_monotonic();
 	if (tsc_now < tsc_begin) {
 		return true;

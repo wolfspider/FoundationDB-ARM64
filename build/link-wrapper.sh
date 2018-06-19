@@ -1,5 +1,6 @@
 #!/bin/bash
-
+CC="/usr/bin/g++"
+echo $CC
 set -e
 
 case $1 in

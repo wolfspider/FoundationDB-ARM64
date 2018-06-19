@@ -425,9 +425,9 @@ public:
 		// pre: !finished()
 		force_inline void prefetch() {
 			Node* next = x->getNext(level-1);
-			_mm_prefetch( (const char*)next, _MM_HINT_T0 );
+                        __builtin_prefetch( (const char*)next );
 			//if ( (((intptr_t)next) & 64) == 0 )
-			_mm_prefetch( (const char*)next+64, _MM_HINT_T0 );
+                        __builtin_prefetch( (const char*)next+64 );
 			//_mm_prefetch( (const char*)next+128, _MM_HINT_T0 );
 			//_mm_prefetch( (const char*)next+192, _MM_HINT_T0 );
 			//_mm_prefetch( (const char*)next+256, _MM_HINT_T0 );
@@ -677,10 +677,10 @@ public:
 			
 			// double prefetch gives +25% speed (single threaded)
 			Node* next = x->getNext(0);
-			_mm_prefetch( (const char*)next, _MM_HINT_T0 );
+                        __builtin_prefetch( (const char*)next );
 			//_mm_prefetch( (const char*)next+64, _MM_HINT_T0 );
 			next = x->getNext(1);
-			_mm_prefetch( (const char*)next, _MM_HINT_T0 );
+                        __builtin_prefetch( (const char*)next );
 			//_mm_prefetch( (const char*)next+64, _MM_HINT_T0 );
 
 			bool isAbove = x->getMaxVersion(0) >= v;
